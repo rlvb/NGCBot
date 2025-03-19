@@ -73,6 +73,11 @@ class AiDialogue:
             'QwenModel': configData['AiConfig']['QwenConfig']['QwenModel'],
             'QwenKey': configData['AiConfig']['QwenConfig']['QwenKey'],
         }
+        # dify配置
+        self.DifyConfig = {
+            'DifyKey': configData['AiConfig']['Dify']['DifyKey'],
+            'DifyApi': configData['AiConfig']['Dify']['DifyApi'],
+        }
         # 初始化消息列表
         self.userChatDicts = {}
 
@@ -458,6 +463,46 @@ class AiDialogue:
         except Exception as e:
             op(f'[-]: 通义千问接口出现错误, 错误信息: {e}')
             return None, [{"role": "system", "content": f'{self.systemAiRole}'}]
+    def getDify(self, content, user_id):
+        op(f'[*]: 正在调用Dify对话接口... ...')
+        if not self.DifyConfig.get('DifyKey'):
+            op(f'[-]: Dify模型未配置')
+            return None
+        
+        headers = {
+            'Authorization': f'Bearer {self.DifyConfig.get("DifyKey")}',
+            'Content-Type': 'application/json'
+        }
+    
+        data = {
+            "inputs": {},
+            "query": content,
+            "response_mode": "blocking",
+            "user": user_id,
+            "model": "default"
+        }
+    
+        try:
+            # 使用 chat-messages 端点进行对话
+            resp = requests.post(
+                self.DifyConfig.get('DifyApi'),
+                headers=headers, 
+                json=data
+            )
+        
+            json_data = resp.json()
+        
+            # 从响应中提取答案
+            if 'answer' in json_data:
+                return json_data['answer']
+            else:
+                op(f'[-]: Dify响应格式异常: {json_data}')
+                return None
+            
+        except Exception as e:
+            op(f'[-]: Dify模型出现错误, 错误信息: {e}')
+            return None
+       
 
     def getAi(self, content, sender):
         """
@@ -493,6 +538,8 @@ class AiDialogue:
                 result, self.userChatDicts[sender] = self.getVolcengine(content, self.userChatDicts[sender])
             if aiModule == 'qwen':
                 result, self.userChatDicts[sender] = self.getQwen(content, self.userChatDicts[sender])
+            if aiModule == 'Dify':
+                result = self.getDify(content, user_id)
             if not result:
                 continue
             else:
