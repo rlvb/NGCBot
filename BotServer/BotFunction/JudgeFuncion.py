@@ -1,4 +1,5 @@
 from DbServer.DbMainServer import DbMainServer
+import re
 
 Dms = DbMainServer()
 
@@ -160,11 +161,21 @@ def judgeAdmin(wxId, roomId):
 
 def judgeAtMe(selfId, content, atUserList):
     """
-    判断有人@我, @所有人不算
-    :param selfId:
-    :param atUserList:
-    :return:
+    判断是否需要回复：
+    1. 有人@我（@所有人不算）
+    2. 收到销售业绩报告格式的消息
+    :param selfId: 机器人自己的ID
+    :param content: 消息内容
+    :param atUserList: @用户列表
+    :return: bool
     """
+    # 判断销售业绩报告格式
+    sales_pattern = re.compile(r'店铺：.*?\n目标.*?\n业绩：.*?\n达成率：.*?%.*?库存：\d+', re.DOTALL)
+    if sales_pattern.search(content):
+        return True
+    
+    # 判断@我的情况
     if selfId in atUserList and '所有人' not in content:
         return True
+        
     return False
