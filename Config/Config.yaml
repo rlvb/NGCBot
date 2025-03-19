@@ -26,7 +26,7 @@ AiConfig:
   # 修改序号即可修改优先对话模型
   # 注意大小写 否则无效
   AiPriority:
-    1: 'deepSeek'
+    12: 'deepSeek'
     2: 'siliconFlow'
     3: 'volcengine'
     4: 'bigModel'
@@ -37,6 +37,7 @@ AiConfig:
     9: 'sparkAi'
     10: 'qianFan'
     11: 'qwen'
+    1: 'Dify'
   # 画图Ai优先级
   AiPicPriority:
     1: 'bigModel'
