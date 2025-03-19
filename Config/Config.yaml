@@ -146,6 +146,12 @@ AiConfig:
     SparkAiKey: 'Bearer {key填这里 大括号删了 Bearer保留}'
     # 模型名称
     SparkModel: '4.0Ultra'
+  # Dify配置
+  Dify:
+    # 这里填Key
+    DifyKey: 'app-M0joiAWuiFqiMkzytev7yly7' 
+    # 这里填Dify接口地址 
+    DifyApi: '' 
 
 # 所有Key配置 [不包含Ai Key配置]
 KeyConfig:
@@ -643,3 +649,7 @@ EmoConfig:
     '击剑': 'fencing'
     '亲': 'kiss'
     '贴贴': 'rub'
+apiConfig:
+  apiKey: "your_api_secret_here"  # 设置一个安全的API密钥
+  host: "0.0.0.0"  # 只允许本地访问，如果需要远程访问，设置为 "0.0.0.0"
+  port: 8000  # API服务器端口
