@@ -86,6 +86,19 @@ class PointFunction:
                 self.wcf.send_text(
                     f'@{getIdName(self.wcf, sender, roomId)} 当前剩余积分: {self.Dms.searchPoint(sender, roomId)}',
                     receiver=roomId, aters=sender)
+            # 判断是否是销售业绩报告格式
+            sales_pattern = re.compile(r'店铺：.*?\n目标.*?\n业绩：.*?\n达成率：.*?%', re.DOTALL)
+            if sales_pattern.search(content):
+                chatSender = f'room@{sender}'
+                aiMsg = self.Ams.getAi(content, chatSender)
+                if aiMsg:
+                    self.wcf.send_text(f'@{getIdName(self.wcf, sender, roomId)} {aiMsg}',
+                                     receiver=roomId, aters=sender)
+                    return
+                self.wcf.send_text(
+                    f'@{getIdName(self.wcf, sender, roomId)} Ai对话接口出现错误, 请联系超管查看控制台输出日志',
+                    receiver=roomId, aters=sender)
+                return
             # Ai对话
             elif judgeAtMe(self.wcf.self_wxid, content, atUserLists):
                 chatSender = f'room@{sender}'
